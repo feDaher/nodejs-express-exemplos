@@ -1,8 +1,9 @@
 import * as express from 'express'
 const app = express()
+app.use(express.json()) //usar para o body(do postman) ser carregado no nosso express(backend(no vscode))
 
-import userController from './controller/userController'
-import postController from './controller/postController'
+import userController from './modules/user/userController'
+import postController from './modules/post/postController'
 
 app.use('/user', userController)
 app.use('/post', postController)
