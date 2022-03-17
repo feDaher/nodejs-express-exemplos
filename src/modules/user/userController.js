@@ -1,12 +1,13 @@
 import { Router } from 'express'
+import { signup, login } from './userService'
 
-import { signup } from './userService'
+const AUTH_COOKIE_NAME = 'authorization'
 
 const router = Router ()
 router.post('/signup', function (req, res) {
   try {
-    const answer = signup(req.body)
-    res.send(answer)
+    const token = signup(req.body)
+    res.cookie(AUTH_COOKIE_NAME, token).status(201).send()
   } catch (err) {
     if (err.message === 'email_existente')
     return res.status(400).send(err.message)
@@ -17,7 +18,15 @@ router.post('/signup', function (req, res) {
 })
 
 router.post('/login', (req, res) => {
-  res.send ('LOGIN /')
+  try {
+    const token = login(req.body)
+    res.cookie(AUTH_COOKIE_NAME, token).status(200).send()
+  }catch (err) {
+    if (err.message === 'email_nao_encontrado' || err.message === 'senha_incorreta')
+    return res.status(400).send(err.message)
+
+    res.status(500).send()
+  }
 })
 
 
